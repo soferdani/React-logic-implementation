@@ -10,9 +10,8 @@ const App = E(
     null,
         E(
             'h2',
-            {id: "dani",
-                    title: "lalal"},
-            "this is working!!! yayy"
+            {id: "dani", title: "lalala"},
+            "this is working!!! yayy" 
         ),
         E(
             Title,
@@ -22,7 +21,7 @@ const App = E(
         E(
             'h3',
             null,
-            "its red ?!!?"
+            "?!!?"
         )
     )
 
