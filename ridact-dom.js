@@ -6,10 +6,10 @@ export function renderElement(vDomElement) {
     }
 
     if (typeof type === 'string') {
-        const domElement = document.createElement(type);
+        const domElement = document.createElement(type)
 
         children.forEach(child => {
-            if (typeof child === 'string') {
+            if (typeof child === 'string' || typeof child === 'number') {
                 Object.keys(props || {}).forEach(propName => {
                     domElement[propName] = props[propName]
                 })
@@ -23,8 +23,4 @@ export function renderElement(vDomElement) {
         return domElement
     }
 
-
-    // Object.keys(props).forEach(prop=> {
-    //
-    // })
 }

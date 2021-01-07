@@ -21,9 +21,15 @@ const App = E(
         E(
             'h3',
             null,
-            "?!!?"
+            3213
         )
     )
 
 // console.log(App)
 document.body.appendChild(renderElement(App))
+
+//
+// let appendTo = document.getElementById('num')
+// let newElement = document.createElement('h1')
+// newElement.textContent = 123123
+// appendTo.appendChild(newElement)
