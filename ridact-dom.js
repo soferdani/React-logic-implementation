@@ -1,3 +1,20 @@
+export function useState (theValue = '') {
+    console.log(theValue)
+    const set = function (something) {
+        theValue = something
+    }
+    console.log(theValue)
+
+    return {
+        set,
+        theValue
+    }
+}
+
+
+
+
+
 export function renderElement(vDomElement) {
     const {type, props, children} = vDomElement;
 
