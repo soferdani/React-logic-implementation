@@ -8,6 +8,7 @@ export function renderElement(vDomElement) {
     if (typeof type === 'string') {
         const domElement = document.createElement(type)
 
+
         children.forEach(child => {
             if (typeof child === 'string' || typeof child === 'number') {
                 Object.keys(props || {}).forEach(propName => {
@@ -15,7 +16,9 @@ export function renderElement(vDomElement) {
                 })
 
                 domElement.appendChild(document.createTextNode(child))
-            } else {
+            } else if (!child) {
+                domElement.appendChild(document.createTextNode("false value"))
+            }  else {
                 domElement.appendChild(renderElement(child))
             }
         })
