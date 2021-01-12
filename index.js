@@ -6,9 +6,8 @@ import {renderElement, useState} from "./ridact-dom.js";
 
 const app1 = function () {
 
-    const [val, setVal] = useState('testUseState')
+    const [val, setVal] = useState('this is first')
 
-    setVal('neweawsd')
 
     const changeTitle = function () {
         setVal('this is second')
@@ -17,7 +16,7 @@ const app1 = function () {
 
     return (
         E('div', {id: '1'},
-                E('h1',{id: 'title'}, 'this is working !'),
+                E('h1',{id: 'title'}, val),
                 E('button',{onClick: changeTitle}, 'clickMe')
         ))
 }

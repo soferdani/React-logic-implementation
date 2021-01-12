@@ -2,13 +2,14 @@
 
 export function useState (initial = '') {
     // must work with array!!!!!!
-    let stateHistory = []
-    stateHistory.push(initial)
+    let state = []
+    state.push(initial)
     const set = function (newVal= '') {
-        stateHistory[0] = newVal
+        state[0] = newVal
+        // needs to render all again
     }
 
-    return [stateHistory, set]
+    return [state, set]
 }
 
 
@@ -24,9 +25,15 @@ export function renderElement(vDomElement) {
 
 
         children.forEach(child => {
-            if (typeof child === 'string' || typeof child === 'number') {
+            console.log(child)
+            if (typeof child === 'string' || typeof child === 'number' || Array.isArray(child)) {
+
                 Object.keys(props || {}).forEach(propName => {
-                    domElement[propName] = props[propName]
+                    if (propName.startsWith('on')){
+                        domElement.addEventListener('click',props.onClick) // very stupid
+                    } else {
+                        domElement[propName] = props[propName]
+                    }
                 })
 
                 domElement.appendChild(document.createTextNode(child))
