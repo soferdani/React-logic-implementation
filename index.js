@@ -1,24 +1,34 @@
 import {createElement as E} from "./readct.js";
-import {renderElement, useState} from "./ridact-dom.js";
+import * as ReactDOM from "./ridact-dom.js";
 
 // const Title = (props) => E('h1',null, props.text)  //this is right
 
-
 const app1 = function () {
-
-    const [val, setVal] = useState('this is first')
-
-
-    const changeTitle = function () {
-        setVal('this is second')
-        console.log(val)
-    }
-
     return (
-        E('div', {id: '1'},
-                E('h1',{id: 'title'}, val),
-                E('button',{onClick: changeTitle}, 'clickMe')
+        E('div', null,
+            counterComponent(),
+            counterComponent()
         ))
 }
 
-document.body.appendChild(renderElement(app1()))
+const counterComponent = () => {
+    const [counter, setCounter] = ReactDOM.useState(0)
+
+    const incrementCount = function () {
+        setCounter(counter + 1)
+    }
+
+    return (
+        E('div', null,
+            E('h1', null, counter),
+            E('button', {onClick: incrementCount}, 'clickMe')
+        ))
+}
+
+
+ReactDOM.render(app1, document.getElementById('root'))
+
+
+// ReactDOM.renderElement(app1(), document.body)
+
+// document.body.appendChild(renderElement(app1()))

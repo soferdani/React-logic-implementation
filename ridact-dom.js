@@ -1,15 +1,42 @@
+let previousRootComponent
+let previousMountPoint
 
+export function render(rootComponent = previousRootComponent, mountPoint = previousMountPoint) {
 
-export function useState (initial = '') {
-    // must work with array!!!!!!
-    let state = []
-    state.push(initial)
-    const set = function (newVal= '') {
-        state[0] = newVal
-        // needs to render all again
+    const realDOM = renderElement(rootComponent())
+
+    if (previousRootComponent) {
+        mountPoint.replaceChild(realDOM, mountPoint.children[0])
+
+    } else {
+        mountPoint.appendChild(realDOM)
+
     }
 
-    return [state, set]
+
+    previousRootComponent = rootComponent
+    previousMountPoint = mountPoint
+
+}
+
+let state
+let index = 0
+
+export function useState(initial) {
+    console.log(initial)
+    if (index === 0) {
+        state = initial
+    }
+
+    const setState = function (newValue) {
+        state = newValue
+        index++
+        render()
+    }
+
+
+    return [state, setState]
+
 }
 
 
@@ -25,12 +52,11 @@ export function renderElement(vDomElement) {
 
 
         children.forEach(child => {
-            console.log(child)
             if (typeof child === 'string' || typeof child === 'number' || Array.isArray(child)) {
 
                 Object.keys(props || {}).forEach(propName => {
-                    if (propName.startsWith('on')){
-                        domElement.addEventListener('click',props.onClick) // very stupid
+                    if (propName.startsWith('on')) {
+                        domElement.addEventListener('click', props.onClick) // very stupid
                     } else {
                         domElement[propName] = props[propName]
                     }
@@ -39,10 +65,11 @@ export function renderElement(vDomElement) {
                 domElement.appendChild(document.createTextNode(child))
             } else if (!child) {
                 domElement.appendChild(document.createTextNode("false value"))
-            }  else {
+            } else {
                 domElement.appendChild(renderElement(child))
             }
         })
+
 
         return domElement
     }
