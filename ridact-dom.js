@@ -1,24 +1,21 @@
-export function useState (theValue = '') {
-    console.log(theValue)
-    const set = function (something) {
-        theValue = something
-    }
-    console.log(theValue)
 
-    return {
-        set,
-        theValue
+
+export function useState (initial = '') {
+    // must work with array!!!!!!
+    let stateHistory = []
+    stateHistory.push(initial)
+    const set = function (newVal= '') {
+        stateHistory[0] = newVal
     }
+
+    return [stateHistory, set]
 }
-
-
-
 
 
 export function renderElement(vDomElement) {
     const {type, props, children} = vDomElement;
 
-    if (typeof type === 'function') { //soport functional components
+    if (typeof type === 'function') { //support functional components
         return renderElement(type(props))
     }
 
