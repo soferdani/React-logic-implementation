@@ -10,40 +10,41 @@ export function render(rootComponent = previousRootComponent, mountPoint = previ
 
     } else {
         mountPoint.appendChild(realDOM)
-
     }
-
 
     previousRootComponent = rootComponent
     previousMountPoint = mountPoint
-
 }
 
-let state
-let index = 0
+let state = [] // support multiplied states !
+let numberOfTimesUseStateIsUsed = 0
 
 export function useState(initial) {
-    console.log(initial)
-    if (index === 0) {
-        state = initial
+    console.log(state)
+
+    if (numberOfTimesUseStateIsUsed === 0) {
+        state[0] = initial
+        numberOfTimesUseStateIsUsed += 1 // why not index ++ ??
+    } else {
+        state[numberOfTimesUseStateIsUsed] = initial
+        // numberOfTimesUseStateIsUsed += 1  //seems reusable to increase here as well
+
     }
 
     const setState = function (newValue) {
-        state = newValue
-        index++
+        // how do i know what witch is the right state to change?? at the moment its hard coded...
+        state[0] = newValue // FIXME: state[0] is not ok!
         render()
     }
 
-
-    return [state, setState]
-
+    return [state[numberOfTimesUseStateIsUsed - 1], setState]
 }
 
 
-export function renderElement(vDomElement) {
+export function renderElement(vDomElement) { // should i call it createDomElement instead of renderElement?
     const {type, props, children} = vDomElement;
 
-    if (typeof type === 'function') { //support functional components
+    if (typeof type === 'function') {
         return renderElement(type(props))
     }
 
@@ -56,6 +57,7 @@ export function renderElement(vDomElement) {
 
                 Object.keys(props || {}).forEach(propName => {
                     if (propName.startsWith('on')) {
+                        // FIXME: need to support all on action!
                         domElement.addEventListener('click', props.onClick) // very stupid
                     } else {
                         domElement[propName] = props[propName]
