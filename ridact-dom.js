@@ -1,43 +1,53 @@
-let previousRootComponent
-let previousMountPoint
+let _rootComponent = null
+let _mountPoint = null
 
-export function render(rootComponent = previousRootComponent, mountPoint = previousMountPoint) {
+let _currentApp = null
+let index = 0
+let hooks = [] // support multiplied states !
 
-    const realDOM = renderElement(rootComponent())
 
-    if (previousRootComponent) {
-        mountPoint.replaceChild(realDOM, mountPoint.children[0])
+
+export function render(rootComponent = _rootComponent, mountPoint = _mountPoint) {
+    const app = renderElement(rootComponent())
+
+
+
+    if (_currentApp) {
+        mountPoint.replaceChild(app, mountPoint.children[0]) // why children 0 ?
 
     } else {
-        mountPoint.appendChild(realDOM)
+        mountPoint.appendChild(app)  // actually push the tree to the real doom
     }
 
-    previousRootComponent = rootComponent
-    previousMountPoint = mountPoint
+    _rootComponent = rootComponent
+    _mountPoint = mountPoint
+    _currentApp = app
+    index = 0
 }
 
-let state = [] // support multiplied states !
-let numberOfTimesUseStateIsUsed = 0
+
 
 export function useState(initial) {
-    console.log(state)
+    console.log(hooks)
+    let state
+    let _index = index
 
-    if (numberOfTimesUseStateIsUsed === 0) {
-        state[0] = initial
-        numberOfTimesUseStateIsUsed += 1 // why not index ++ ??
+    if (hooks[_index]) {
+        state = hooks[_index]
     } else {
-        state[numberOfTimesUseStateIsUsed] = initial
-        // numberOfTimesUseStateIsUsed += 1  //seems reusable to increase here as well
-
+        hooks[_index] = initial
+        state = initial
     }
 
+
     const setState = function (newValue) {
-        // how do i know what witch is the right state to change?? at the moment its hard coded...
-        state[0] = newValue // FIXME: state[0] is not ok!
+        hooks[_index] = newValue
         render()
     }
 
-    return [state[numberOfTimesUseStateIsUsed - 1], setState]
+    index+=1
+
+    return [state, setState]
 }
 
 
@@ -58,7 +68,10 @@ export function renderElement(vDomElement) { // should i call it createDomElemen
                 Object.keys(props || {}).forEach(propName => {
                     if (propName.startsWith('on')) {
                         // FIXME: need to support all on action!
-                        domElement.addEventListener('click', props.onClick) // very stupid
+                        if (propName === 'onClick'){
+                            domElement.onclick = props.onClick // now there is no lack here..
+                        } // can add onChange etc..
+
                     } else {
                         domElement[propName] = props[propName]
                     }

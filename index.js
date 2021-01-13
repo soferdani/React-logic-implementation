@@ -1,7 +1,6 @@
 import {createElement as E} from "./readct.js";
 import * as ReactDOM from "./ridact-dom.js";
 
-// const Title = (props) => E('h1',null, props.text)  //this is right
 
 const app1 = function () {
     return (
