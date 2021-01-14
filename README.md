@@ -1,1 +1,1 @@
-## VERY basic react logic process 
+## Basic React and reactDOM implementation from scratch 
