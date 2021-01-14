@@ -5,8 +5,12 @@ import * as ReactDOM from "./ridact-dom.js";
 const app1 = function () {
     return (
         E('div', null,
-            counterComponent(),
-            counterComponent()
+            [
+                counterComponent(),
+                counterComponent(),
+                counterComponent(),
+                counterComponent(),
+            ]
         ))
 }
 
@@ -17,10 +21,12 @@ const counterComponent = () => {
         setCounter(counter + 1)
     }
 
+    console.log(counter)
+
     return (
         E('div', null,
             E('h1', null, counter),
-            E('button', {onClick: incrementCount}, 'clickMe')
+            E('button', {onclick: incrementCount}, 'clickMe')
         ))
 }
 

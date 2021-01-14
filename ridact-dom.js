@@ -2,35 +2,32 @@ let _rootComponent = null
 let _mountPoint = null
 
 let _currentApp = null
-let index = 0
+let index = 0 // represent the number of hooks i have
 let hooks = [] // support multiplied states !
-
 
 
 export function render(rootComponent = _rootComponent, mountPoint = _mountPoint) {
     const app = renderElement(rootComponent())
 
 
-
     if (_currentApp) {
-        mountPoint.replaceChild(app, mountPoint.children[0]) // why children 0 ?
+        mountPoint.replaceChild(app, mountPoint.children[0])
 
     } else {
-        mountPoint.appendChild(app)  // actually push the tree to the real doom
+        mountPoint.appendChild(app)
     }
 
     _rootComponent = rootComponent
     _mountPoint = mountPoint
     _currentApp = app
-    index = 0
+    index = 0 // every render we make index 0 again then each hook remember what
 }
 
 
-
 export function useState(initial) {
-    console.log(hooks)
     let state
     let _index = index
+
 
     if (hooks[_index]) {
         state = hooks[_index]
@@ -45,7 +42,7 @@ export function useState(initial) {
         render()
     }
 
-    index+=1
+    index += 1 // only when we use the useState we increase the index
 
     return [state, setState]
 }
@@ -61,26 +58,24 @@ export function renderElement(vDomElement) { // should i call it createDomElemen
     if (typeof type === 'string') {
         const domElement = document.createElement(type)
 
+        Object.keys(props || {}).forEach(propName => {
+            domElement[propName] = props[propName]
+        })
 
         children.forEach(child => {
-            if (typeof child === 'string' || typeof child === 'number' || Array.isArray(child)) {
+            if (child == null || typeof child === "undefined") { // good
+                return;
+            }
 
-                Object.keys(props || {}).forEach(propName => {
-                    if (propName.startsWith('on')) {
-                        // FIXME: need to support all on action!
-                        if (propName === 'onClick'){
-                            domElement.onclick = props.onClick // now there is no lack here..
-                        } // can add onChange etc..
-
-                    } else {
-                        domElement[propName] = props[propName]
-                    }
-                })
-
+            if (Array.isArray(child)) {
+                child.forEach(childVDom => {
+                    domElement.appendChild(renderElement(childVDom))
+                });
+                return;
+            }
+            if (typeof child === 'string' || typeof child === 'number' ) {
                 domElement.appendChild(document.createTextNode(child))
-            } else if (!child) {
-                domElement.appendChild(document.createTextNode("false value"))
-            } else {
+            } else { // good
                 domElement.appendChild(renderElement(child))
             }
         })
